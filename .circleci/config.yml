@@ -4,7 +4,7 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: 
-    services:
+
       mariadb:
         image: 'docker.io/bitnami/mariadb:10.3-debian-10'
         volumes:
