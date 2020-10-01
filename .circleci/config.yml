@@ -50,7 +50,8 @@ jobs:
           name: Build frontend
           command: |
             cd htdocs/wp-content/themes/wordpress-theme-base
-            npm install # Builds using prod conf
+            npm install 
+            # Builds using prod conf
 
       - run:
           name: Install WordPress
