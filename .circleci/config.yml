@@ -5,8 +5,9 @@ jobs:
   build:
     working_directory: ~/repo
     docker:
-      # specify the version you desire here
       - image: circleci/php:7.4.6-fpm-buster
+      - image: circleci/mysql:latest
+      # specify the version you desire here
       - image: k1sul1/circleci-wordpress:0.0.1
         environment:
           - WP_TEST_URL: "http://localhost:12000"
@@ -123,10 +124,6 @@ jobs:
   # This is just much slower. So let's not use it, for now.
   deploy:
     working_directory: ~/repo
-      docker:
-        - image: circleci/php:7.4.6-fpm-buster
-        - image: circleci/mysql:latest
- 
       steps:
        - run:
             name: Deploy to staging
