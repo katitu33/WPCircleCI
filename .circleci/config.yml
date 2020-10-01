@@ -33,7 +33,7 @@ workflows:
             - WORDPRESS_DATABASE_USER=bn_wordpress
             - WORDPRESS_DATABASE_NAME=bitnami_wordpress
             - ALLOW_EMPTY_PASSWORD=yes
-            workflows:
+       
       services:
         # Run the welcome/run job in its own container
         jobs:
