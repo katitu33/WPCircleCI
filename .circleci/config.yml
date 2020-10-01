@@ -20,13 +20,14 @@ jobs:
           - DB_USER: "root"
           - DB_PASSWORD: ""
           - DB_NAME: "circle_test"
+          steps:
+            - checkout
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
       # documented at https://circleci.com/docs/2.0/circleci-images/
       - image: circleci/mysql:5.7.22-ram
-      steps:
-        - checkout
+   
          #- run:
            #  name: Deploy to staging
            #  command: |
