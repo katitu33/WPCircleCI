@@ -27,11 +27,11 @@ jobs:
       - image: circleci/mysql:5.7.22-ram
       steps:
         - checkout
-         - run:
-             name: Deploy to staging
-             command: |
-               sudo apt-get install sshpass
-               sshpass -e scp -r -P 10349 USER@TARGET.domain:/data/wordpress ~/repo
+         #- run:
+           #  name: Deploy to staging
+           #  command: |
+            #   sudo apt-get install sshpass
+            #   sshpass -e scp -r -P 10349 USER@TARGET.domain:/data/wordpress ~/repo
    
      
 
