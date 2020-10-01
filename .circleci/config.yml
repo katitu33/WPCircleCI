@@ -4,7 +4,8 @@ version: 2.1
 orbs:
   # Declare a dependency on the welcome-orb
   welcome: circleci/welcome-orb@0.4.1
-
+  services:
+  mariadb:
     image: 'docker.io/bitnami/mariadb:10.3-debian-10'
     volumes:
       - 'mariadb_data:/bitnami/mariadb'
@@ -12,7 +13,7 @@ orbs:
       - MARIADB_USER=bn_wordpress
       - MARIADB_DATABASE=bitnami_wordpress
       - ALLOW_EMPTY_PASSWORD=yes
-  
+  wordpress:
     image: 'docker.io/bitnami/wordpress:5-debian-10'
     ports:
       - '80:8080'
@@ -34,3 +35,7 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
+      services:
+        # Run the welcome/run job in its own container
+        jobs:
+          - services/run
