@@ -38,12 +38,12 @@ jobs:
           # fallback to using the latest cache if no exact match is found
         #  - v1-dependencies-
 
-      - run:
-          name: Preparations
-          command: |
-             sudo apt-get install pv mysql-client sshpass
-             sudo docker-php-ext-install mysqli pdo pdo_mysql # WTF, why aren't these installed already?
-            composer install -n --prefer-dist --no-dev
+      #- run:
+       #   name: Preparations
+        #  command: |
+         #    sudo apt-get install pv mysql-client sshpass
+          #   sudo docker-php-ext-install mysqli pdo pdo_mysql # WTF, why aren't these installed already?
+           # composer install -n --prefer-dist --no-dev
 
       - run:
           name: Build frontend
