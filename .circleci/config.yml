@@ -6,7 +6,7 @@ jobs:
     working_directory: ~/repo
     docker:
       # specify the version you desire here
-      # - image: circleci/php:7.4.6-fpm-buster
+      - image: circleci/php:7.4.6-fpm-buster
       - image: k1sul1/circleci-wordpress:0.0.1
         environment:
           - WP_TEST_URL: "http://localhost:12000"
