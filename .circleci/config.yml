@@ -1,142 +1,396 @@
-# Bedrock infused WordPress config file for Circle CI 2.0
+# This code is licensed from CircleCI to the user under the MIT license. See
+# https://circleci.com/orbs/registry/licensing for details.
+commands:
+  html-proofer:
+      description: Runs HTML Proofer on 'path' to check for html errors. Ruby and the `html-proofer` gem must already be installed to use.
+      parameters:
+          allow-hash-href:
+              default: true
+              description: If `true`, ignores the `href=
+              type: boolean
+          allow-missing-href:
+              default: false
+              description: If `true`, does not flag `a` tags missing `href` (this is the default for HTML5).
+              type: boolean
+          alt-ignore:
+              default: ""
+              description: A comma-separated list of Strings or RegExps containing `img`s whose missing `alt` tags are safe to ignore
+              type: string
+          as-links:
+              default: false
+              description: Assumes that `PATH` is a comma-separated array of links to check.
+              type: boolean
+          assume-extension:
+              default: false
+              description: 'Automatically add extension (e.g. `.html`) to file paths, to allow extensionless URLs (as supported by Jekyll 3 and GitHub Pages) (default: `false`).'
+              type: boolean
+          check-external-hash:
+              default: false
+              description: 'Checks whether external hashes exist (even if the webpage exists). This slows the checker down (default: `false`).'
+              type: boolean
+          check-favicon:
+              default: false
+              description: 'Enables the favicon checker (default: `false`).'
+              type: boolean
+          check-html:
+              default: true
+              description: 'Enables HTML validation errors from Nokogiri (default: `false`).'
+              type: boolean
+          check-img-http:
+              default: false
+              description: 'Fails an image if it''s marked as `http` (default: `false`).'
+              type: boolean
+          check-opengraph:
+              default: false
+              description: 'Enables the Open Graph checker (default: `false`).'
+              type: boolean
+          check-sri:
+              default: false
+              description: 'Check that `<link>` and `<script>` external resources do use SRI (default: `false`).'
+              type: boolean
+          checks-to-ignore:
+              default: ''''''
+              description: An array of Strings indicating which checks you'd like to not perform.
+              type: string
+          directory-index-file:
+              default: index.html
+              description: 'Sets the file to look for when a link refers to a directory. (default: `index.html`)'
+              type: string
+          disable-external:
+              default: true
+              description: 'If `true`, does not run the external link checker, which can take a lot of time (default: `false`)'
+              type: boolean
+          empty-alt-ignore:
+              default: true
+              description: If `true`, ignores images with empty alt tags
+              type: boolean
+          enforce-https:
+              default: false
+              description: 'Fails a link if it''s not marked as `https` (default: `false`).'
+              type: boolean
+          error-sort:
+              default: :path
+              description: 'Defines the sort order for error output. Can be `:path`, `:desc`, or `:status` (default: `:path`).'
+              type: string
+          extension:
+              default: '''.html'''
+              description: 'The extension of your HTML files including the dot. (default: `.html`)'
+              type: string
+          external_only:
+              default: false
+              description: Only checks problems with external references
+              type: boolean
+          file-ignore:
+              default: ''''''
+              description: A comma-separated list of Strings or RegExps containing file paths that are safe to ignore
+              type: string
+          http-status-ignore:
+              default: ''''''
+              description: A comma-separated list of numbers representing status codes to ignore.
+              type: string
+          internal-domains:
+              default: ''''''
+              description: A comma-separated list of Strings containing domains that will be treated as internal urls.
+              type: string
+          log-level:
+              default: info
+              description: 'Sets the logging level, as determined by Yell. One of `:debug`, `:info`, `:warn`, `:error`, or `:fatal`. (default: `:info`)'
+              type: string
+          only-4xx:
+              default: false
+              description: Only reports errors for links that fall within the 4xx status code range
+              type: boolean
+          path:
+              description: Path to generated files relative to working_directory.
+              type: string
+          report-eof-tags:
+              default: false
+              description: 'Ignore `check_html` errors associated with malformed tags (default: `false`)'
+              type: boolean
+          report-invalid-tags:
+              default: false
+              description: 'Ignore `check_html` errors associated with unknown markup (default: `false`)'
+              type: boolean
+          report-mismatched-tags:
+              default: false
+              description: 'Ignore `check_html` errors associated with mismatched tags (default: `false`)'
+              type: boolean
+          report-missing-doctype:
+              default: false
+              description: 'Ignore `check_html` errors associated with missing or out-of-order `DOCTYPE` (default: `false`)'
+              type: boolean
+          report-missing-names:
+              default: false
+              description: 'Ignore `check_html` errors associated with missing entities (default: `false`)'
+              type: boolean
+          report-script-embeds:
+              default: false
+              description: 'Ignore `check_html` errors associated with `script`s (default: `false`)'
+              type: boolean
+          storage-dir:
+              default: '''tmp/.htmlproofer'''
+              description: 'Directory where to store the cache log (default: "tmp/.htmlproofer")'
+              type: string
+          timeframe:
+              default: '''1h'''
+              description: A string representing the caching timeframe. The format is `[0-9]+[mhd]` where `m` stands for month, `h` for hours and `d` for days.
+              type: string
+          typhoeus-config:
+              default: '''{}'''
+              description: JSON-formatted string of Typhoeus config. Will override the html-proofer defaults.
+              type: string
+          url-ignore:
+              default: ''''''
+              description: A comma-separated list of Strings or RegExps containing URLs that are safe to ignore. It affects all HTML attributes. Note that non-HTTP(S) URIs are always ignored
+              type: string
+          url-swap:
+              default: ''''''
+              description: A comma-separated list containing key-value pairs of `RegExp => String`. It transforms URLs that match `RegExp` into `String` via `gsub`. The escape sequences `:` should be used to produce literal `:`s.
+              type: string
+      steps:
+          - run:
+              command: |
+                  htmlproofer << parameters.path >> \
+                    <<# parameters.allow-missing-href >> --allow-missing-href <</ parameters.allow-missing-href >> \
+                    <<# parameters.allow-hash-href >> --allow-hash-href <</ parameters.allow-hash-href >> \
+                    <<# parameters.as-links >> --as-links <</ parameters.as-links >> \
+                    --alt-ignore << parameters.alt-ignore >> \
+                    <<# parameters.assume-extension >> --assume-extension <</ parameters.assume-extension >> \
+                    --checks-to-ignore << parameters.checks-to-ignore >> \
+                    <<# parameters.check-external-hash >> --check-external-hash <</ parameters.check-external-hash >> \
+                    <<# parameters.check-favicon >> --check-favicon <</ parameters.check-favicon >> \
+                    <<# parameters.check-html >> --check-html <</ parameters.check-html >> \
+                    <<# parameters.check-img-http >> --check-img-http <</ parameters.check-img-http >> \
+                    <<# parameters.check-opengraph >> --check-opengraph <</ parameters.check-opengraph >> \
+                    <<# parameters.check-sri >> --check-sri <</ parameters.check-sri >> \
+                    --directory-index-file << parameters.directory-index-file >> \
+                    <<# parameters.disable-external >> --disable-external <</ parameters.disable-external >> \
+                    <<# parameters.empty-alt-ignore >> --empty-alt-ignore <</ parameters.empty-alt-ignore >> \
+                    --error-sort << parameters.error-sort >> \
+                    <<# parameters.enforce-https >> --enforce-https <</ parameters.enforce-https >> \
+                    --extension << parameters.extension >> \
+                    <<# parameters.external_only >> --external_only <</ parameters.external_only >> \
+                    --file-ignore << parameters.file-ignore >> \
+                    --http-status-ignore << parameters.http-status-ignore >> \
+                    --internal-domains << parameters.internal-domains >> \
+                    <<# parameters.report-invalid-tags >> --report-invalid-tags <</ parameters.report-invalid-tags >> \
+                    <<# parameters.report-missing-names >> --report-missing-names <</ parameters.report-missing-names >> \
+                    <<# parameters.report-script-embeds >> --report-script-embeds <</ parameters.report-script-embeds >> \
+                    <<# parameters.report-missing-doctype >> --report-missing-doctype <</ parameters.report-missing-doctype >> \
+                    <<# parameters.report-eof-tags >> --report-eof-tags <</ parameters.report-eof-tags >> \
+                    <<# parameters.report-mismatched-tags >> --report-mismatched-tags <</ parameters.report-mismatched-tags >> \
+                    --log-level << parameters.log-level >> \
+                    <<# parameters.only-4xx >> --only-4xx <</ parameters.only-4xx >> \
+                    --storage-dir << parameters.storage-dir >> \
+                    --timeframe << parameters.timeframe >> \
+                    --typhoeus-config << parameters.typhoeus-config >> \
+                    --url-ignore << parameters.url-ignore >> \
+                    --url-swap << parameters.url-swap >>
+              name: Test generated website with HTML Proofer.
+  hugo-build:
+      description: Builds with Hugo a static site located at 'source'. The default is '.'.
+      parameters:
+          destination:
+              default: public
+              description: Path to where Hugo outputs generated site. Relative to `source`.
+              type: string
+          extra-flags:
+              default: ""
+              description: Additional flags to pass when running Hugo (e.g. -DF).
+              type: string
+          hugo-env:
+              default: production
+              description: Set the value of HUGO_ENV prior to running Hugo.
+              type: string
+          source:
+              default: .
+              description: Path to Hugo root relative to working_directory.
+              type: string
+      steps:
+          - run:
+              command: HUGO_ENV=<< parameters.hugo-env >> hugo -v -s << parameters.source >> -d << parameters.destination >> << parameters.extra-flags >>
+              name: Build with Hugo
+  install:
+      description: Install the Hugo binary into your build.
+      parameters:
+          extended:
+              default: true
+              description: Install the Hugo extended binary?
+              type: boolean
+          install-location:
+              default: /usr/local/bin
+              description: Location where the hugo binary should be installed.
+              type: string
+          version:
+              description: The Hugo version.
+              type: string
+      steps:
+          - detect/init
+          - run:
+              command: |
+                  case $OSD_FAMILY in
+                    linux)
+                      OS=Linux
+                      PKG_EXT=tar.gz
+                      ;;
+                    darwin)
+                      OS=macOS
+                      PKG_EXT=tar.gz
+                      ;;
+                    *)
+                      echo "Unsupported operating system."
+                      exit 1
+                      ;;
+                  esac
 
-version: 2
+                  # If we're in Alpine, install additional compatibility packages.
+                  if [[ $OSD_ID == "alpine" ]]; then
+                    apk add build-base curl libcurl libc6-compat libxml2-dev libxslt-dev
+                  fi
+
+                  if [ << parameters.extended >> = true ]; then
+                    HUGO_EXTENDED="_extended"
+                  else
+                    HUGO_EXTENDED=""
+                  fi
+
+                  HUGO_URL=https://github.com/gohugoio/hugo/releases/download/v<< parameters.version >>/hugo${HUGO_EXTENDED}_<< parameters.version >>_${OS}-64bit.${PKG_EXT}
+                  curl --fail -sSL "$HUGO_URL" -o hugo-archive 2>/dev/null
+                  # If the download fails...
+                  if cat hugo-archive | $SUDO tar -xz -C << parameters.install-location >> hugo 2>/dev/null; then
+                    echo "We're good, continue."
+                  else
+                    if [[ ! << parameters.version >> =~ ^[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+                      echo "Failed to install. The version number '<< parameters.version >>' is not a full valid SemVer version."
+                    else
+                      echo "Please choose a valid version from the Hugo tags page, without the leading 'v': https://github.com/gohugoio/hugo/tags"
+                      echo "The download URL that failed was: ${HUGO_URL}"
+                    fi
+
+                    exit 1
+                  fi
+              name: Install Hugo
+description: |
+  Common CircleCI tasks for installing and using Hugo.
+
+  Supports the Docker executor (Linux OS with libc) and the macOS executor.
+   Includes a `cibuilds` executor image with Hugo and html-proofer
+   pre-installed.
+display:
+  home_url: https://gohugo.io/
+  source_url: https://github.com/CircleCI-Public/hugo-orb/
+examples:
+  build-and-deploy:
+      description: |
+          "An example of building a Hugo site, testing with HTML Proofer, and deployng it. Here the Hugo source is in a subdirectory called 'src'. The deploy job is empty and serves as an example. Instead of the 'ls' command, you'd want to deploy the files using whatever tools you're used to."
+      usage:
+          jobs:
+              deploy:
+                  docker:
+                      - image: cimg/base
+                  steps:
+                      - attach_workspace:
+                          at: my-site
+                      - run: ls -lah my-site
+          orbs:
+              hugo: circleci/hugo@0.2
+          version: 2.1
+          workflows:
+              main:
+                  jobs:
+                      - hugo/build:
+                          html-proofer: true
+                          source: src/
+                          version: "0.55"
+                      - deploy:
+                          filters:
+                              branches:
+                                  only: master
+                          requires:
+                              - hugo/build
+  build-and-test:
+      description: |
+          "The simplest example of using the Hugo orb."
+      usage:
+          orbs:
+              hugo: circleci/hugo@0.1
+          version: 2.1
+          workflows:
+              main:
+                  jobs:
+                      - hugo/build:
+                          html-proofer: true
+                          version: "0.55"
+executors:
+  default:
+      description: The cibuilds/hugo Docker image.
+      docker:
+          - image: cibuilds/hugo:<< parameters.tag >>
+      parameters:
+          tag:
+              default: latest
+              description: The `cibuilds/hugo` Docker image version tag.
+              type: string
 jobs:
   build:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/php:7.4.6-fpm-buster
-      - image: circleci/mysql:latest
-      # specify the version you desire here
-      - image: k1sul1/circleci-wordpress:0.0.1
-        environment:
-          - WP_TEST_URL: "http://localhost:12000"
-          - WP_TEST_USER: "test"
-          - WP_TEST_USER_PASS: "test"
-          - WP_ENV: "ci"
-          - MYSQL_ALLOW_EMPTY_PASSWORD: true,
-          - MYSQL_DATABASE: "circle_test"
-          - MYSQL_HOST: "127.0.0.1"
-          - DB_HOST: "127.0.0.1"
-          - DB_USER: "root"
-          - DB_PASSWORD: ""
-          - DB_NAME: "circle_test"
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-     # - image: circleci/mysql:5.7.22-ram
-
-    
-
-      # Download and cache dependencies
-      #- restore_cache:
-        #  keys:
-        #  - v1-dependencies-{{ checksum "composer.json" }}
-         # - v1-dependencies-{{ checksum "htdocs/wp-content/themes/wordpress-theme-base/package.json" }}
-
-          # fallback to using the latest cache if no exact match is found
-        #  - v1-dependencies-
-
-      - run:
-          name: Preparations
-          command: |
-             sudo apt-get install pv mysql-client sshpass
-             sudo docker-php-ext-install mysqli pdo pdo_mysql 
-             # WTF, why aren't these installed already?
-             composer install -n --prefer-dist --no-dev
-
-      - run:
-          name: Build frontend
-          command: |
-            cd htdocs/wp-content/themes/wordpress-theme-base
-            npm install 
-            # Builds using prod conf
-
-      - run:
-          name: Install WordPress
-          command: |
-            # set +eo pipefail
-            # set -x
-
-            # Get WP-cli
-            curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-
-            # Install WordPress
-            php wp-cli.phar core install \
-              --url=$WP_TEST_URL \
-              --title='Test' \
-              --admin_user=$WP_TEST_USER \
-              --admin_password=$WP_TEST_USER_PASS \
-              --admin_email="$WP_TEST_USER@wordpress.dev" \
-              --path=htdocs/wordpress
-
-            # Get the database
-            sshpass -e ssh -q -o StrictHostKeyChecking=no USER@TARGET.domain -p 10349 'wp db export - --single-transaction' > database.sql
-            mysql -h 127.0.0.1 -u root -D circle_test < database.sql
-            rm database.sql
-
-            # Activate all plugins
-            php wp-cli.phar plugin activate --all --path=htdocs/wordpress
-
-            # Get alternative router so we can do without Apache or nginx
-            cd ~/repo
-            curl -s https://raw.githubusercontent.com/Seravo/wordpress-test-template/master/lib/router.php > htdocs/router.php
-            cd htdocs
-            ls
-
-            php -S 0.0.0.0:8080 router.php &
-            sleep 2; # This randomly fixed issue with not being able to connect
-            curl -i http://localhost:8080
-
-      - run:
-          name: Deploy
-          command: |
-            # Handle restarting nginx and so on...
-            if [ $CIRCLE_BRANCH == 'master' ]; then
-              sshpass -e rsync -av --progress --exclude='node_modules' --delete --exclude='*/wp-content/uploads/*' -e 'ssh -T -o Compression=no -o StrictHostKeyChecking=no -p 10349' ~/repo/ USER@TARGET.domain:/data/wordpress
-            fi
-
-            if [ $CIRCLE_BRANCH == 'production' ]; then
-              sshpass -e rsync -av --progress --exclude='node_modules' --delete --exclude='*/wp-content/uploads/*' -e 'ssh -T -o Compression=no -o StrictHostKeyChecking=no -p 10298' ~/repo/ USER@TARGET.domain:/data/wordpress
-            fi
-
-      # - run: # Say no to ruby, try Puppeteer
-          # name: RSpec
-          # command: |
-            # bundle install --gemfile=~/repo/tests/rspec/Gemfile
-            # cd ~/repo/tests/rspec
-            # bundle exec rspec *.rb
-
-
-      - save_cache:
-          key: v1-dependencies-{{ checksum "composer.json" }}
-          paths:
-            - ./vendor
-
-      - save_cache:
-          key: v1-dependencies-{{ checksum "htdocs/wp-content/themes/wordpress-theme-base/package.json" }}
-          paths:
-            - /home/circleci/repo/htdocs/wp-content/themes/wordpress-theme-base/node_modules
-
-  # What's the point of running a separate job for this? Deploy will fail if the build fails.
-  # This is just much slower. So let's not use it, for now.
- 
-       - run:
-            name: Deploy to staging
-            command: |
-             sudo apt-get install sshpass
-             sshpass -e scp -r -P 10349 USER@TARGET.domain:/data/wordpress ~/repo
- 
- 
-workflows:
-  version: 2
-  build-deploy:
-    jobs:
-      - build
-      # - deploy:
-         #  requires:
-          #   - build
-          # filters:
-            # branches:
-              # only: master
+      description: Build a site with Hugo.
+      executor:
+          name: default
+          tag: << parameters.version >>
+      parameters:
+          destination:
+              default: public
+              description: Path to where Hugo outputs generated site. Relative to `source`.
+              type: string
+          html-proofer:
+              default: true
+              description: Whether or not to test the outputted HTML with HTML Proofer.
+              type: boolean
+          hugo-env:
+              default: production
+              description: Set the value of HUGO_ENV prior to running Hugo.
+              type: string
+          hugo-extra-flags:
+              default: ""
+              description: Additional flags to pass when running Hugo (e.g. -DF).
+              type: string
+          persist-to-workspace:
+              default: true
+              description: Whether to persist generated files to a CircleCI Workspace. This uses `parameters.source` as root and `parameters.publishdir` as the path.
+              type: boolean
+          source:
+              default: .
+              description: Path to Hugo root relative to working_directory.
+              type: string
+          version:
+              default: latest
+              description: Hugo version to use. Defaults to latest.
+              type: string
+      steps:
+          - checkout
+          - run:
+              command: |
+                  if [ -f ".gitmodules" ]; then
+                    git submodule sync
+                    git submodule update --init --recursive
+                  fi
+              name: Checkout Submodules if Needed
+          - hugo-build:
+              destination: << parameters.destination >>
+              extra-flags: << parameters.hugo-extra-flags >>
+              source: << parameters.source >>
+          - when:
+              condition: << parameters.html-proofer >>
+              steps:
+                  - html-proofer:
+                      path: << parameters.source >>/<< parameters.destination >>
+          - when:
+              condition: << parameters.persist-to-workspace >>
+              steps:
+                  - persist_to_workspace:
+                      paths:
+                          - << parameters.destination >>
+                      root: << parameters.source >>
+orbs:
+  detect: circleci/os-detect@0.2
+version: 2.1
