@@ -57,7 +57,7 @@ jobs:
           name: Install WordPress
           command: |
              set +eo pipefail
-            # set -x
+             set -x
 
             # Get WP-cli
             curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
