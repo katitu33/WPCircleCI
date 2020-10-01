@@ -6,7 +6,7 @@ jobs:
     working_directory: ~/repo
     docker:
       # specify the version you desire here
-     - image: circleci/php:7.0-fpm-node-browsers
+      # - image: circleci/php:7.0-fpm-node-browsers
       - image: k1sul1/circleci-wordpress:0.0.1
         environment:
           - WP_TEST_URL: "http://localhost:12000"
@@ -44,18 +44,22 @@ jobs:
             # sudo apt-get install pv mysql-client sshpass
             # sudo docker-php-ext-install mysqli pdo pdo_mysql # WTF, why aren't these installed already?
             composer install -n --prefer-dist --no-dev
+
       - run:
           name: Build frontend
           command: |
             cd htdocs/wp-content/themes/wordpress-theme-base
             npm install # Builds using prod conf
+
       - run:
           name: Install WordPress
           command: |
             # set +eo pipefail
             # set -x
+
             # Get WP-cli
             curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+
             # Install WordPress
             php wp-cli.phar core install \
               --url=$WP_TEST_URL \
@@ -64,20 +68,25 @@ jobs:
               --admin_password=$WP_TEST_USER_PASS \
               --admin_email="$WP_TEST_USER@wordpress.dev" \
               --path=htdocs/wordpress
+
             # Get the database
             sshpass -e ssh -q -o StrictHostKeyChecking=no USER@TARGET.domain -p 10349 'wp db export - --single-transaction' > database.sql
             mysql -h 127.0.0.1 -u root -D circle_test < database.sql
             rm database.sql
+
             # Activate all plugins
             php wp-cli.phar plugin activate --all --path=htdocs/wordpress
+
             # Get alternative router so we can do without Apache or nginx
             cd ~/repo
             curl -s https://raw.githubusercontent.com/Seravo/wordpress-test-template/master/lib/router.php > htdocs/router.php
             cd htdocs
             ls
+
             php -S 0.0.0.0:8080 router.php &
             sleep 2; # This randomly fixed issue with not being able to connect
             curl -i http://localhost:8080
+
       - run:
           name: Deploy
           command: |
@@ -85,9 +94,11 @@ jobs:
             if [ $CIRCLE_BRANCH == 'master' ]; then
               sshpass -e rsync -av --progress --exclude='node_modules' --delete --exclude='*/wp-content/uploads/*' -e 'ssh -T -o Compression=no -o StrictHostKeyChecking=no -p 10349' ~/repo/ USER@TARGET.domain:/data/wordpress
             fi
+
             if [ $CIRCLE_BRANCH == 'production' ]; then
               sshpass -e rsync -av --progress --exclude='node_modules' --delete --exclude='*/wp-content/uploads/*' -e 'ssh -T -o Compression=no -o StrictHostKeyChecking=no -p 10298' ~/repo/ USER@TARGET.domain:/data/wordpress
             fi
+
       # - run: # Say no to ruby, try Puppeteer
           # name: RSpec
           # command: |
@@ -130,6 +141,6 @@ workflows:
        - deploy:
            requires:
              - build
-          # filters:
-            # branches:
-              # only: master
+           filters:
+             branches:
+               only: master
